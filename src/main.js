@@ -4,6 +4,8 @@ import './cube-ui';
 
 import './common/stylus/index.styl';
 
+import './registerComponentToAPI';
+
 Vue.config.productionTip = false;
 
 new Vue({

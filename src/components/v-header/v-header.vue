@@ -53,6 +53,7 @@
             seller: 'seller'
           }
         })
+
         this.headerDetailComp.show()
       }
     },
