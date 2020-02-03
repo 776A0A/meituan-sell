@@ -20,14 +20,8 @@
         @scroll="onScroll"
         :options="slideOption"
       >
-        <cube-slide-item>
-          <Goods />
-        </cube-slide-item>
-        <cube-slide-item>
-          <Ratings />
-        </cube-slide-item>
-        <cube-slide-item>
-          <Seller />
+        <cube-slide-item v-for="(tab, index) in tabs" :key="index">
+          <component :is="tab.component" :data="tab.data" />
         </cube-slide-item>
       </cube-slide>
     </div>
@@ -37,13 +31,8 @@
 <script>
   /* eslint-disable vue/no-unused-components */
 
-  import Goods from '../goods/goods';
-  import Ratings from '../ratings/ratings';
-  import Seller from '../seller/seller';
-
   export default {
     name: 'tab',
-    components: { Goods, Ratings, Seller },
     props: {
       tabs: {
         type: Array,
@@ -51,10 +40,15 @@
           return [];
         },
       },
+      initialIndex: {
+        // 初始渲染的选中tab
+        type: Number,
+        default: 0,
+      },
     },
     data() {
       return {
-        index: 0,
+        index: this.initialIndex,
         slideOption: {
           probeType: 3,
           listenScroll: true,
