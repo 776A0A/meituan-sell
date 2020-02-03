@@ -2,7 +2,7 @@
   <div id="app">
     <VHeader :seller="seller" />
     <div class="tab-wrapper">
-      <Tab :tabs="tabs" :initialIndex="1" />
+      <Tab :tabs="tabs" :initialIndex="initialIndex" />
     </div>
   </div>
 </template>
@@ -14,11 +14,16 @@
   import Tab from './components/tab/tab';
   import { getSeller } from './api';
 
+  import Goods from './components/goods/goods';
+  import Ratings from './components/ratings/ratings';
+  import Seller from './components/seller/seller';
+
   export default {
     name: 'app',
     data() {
       return {
         seller: {},
+        initialIndex: 0,
       };
     },
     computed: {
@@ -27,17 +32,17 @@
         return [
           {
             label: '商品',
-            component: () => import('./components/goods/goods'),
+            component: Goods,
             data: { seller: _this.seller },
           },
           {
             label: '评价',
-            component: () => import('./components/ratings/ratings'),
+            component: Ratings,
             data: { seller: _this.seller },
           },
           {
             label: '商家',
-            component: () => import('./components/seller/seller'),
+            component: Seller,
             data: { seller: _this.seller },
           },
         ];

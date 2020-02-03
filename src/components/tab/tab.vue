@@ -21,7 +21,8 @@
         :options="slideOption"
       >
         <cube-slide-item v-for="(tab, index) in tabs" :key="index">
-          <component :is="tab.component" :data="tab.data" />
+          <!-- 动态渲染组件 -->
+          <component :is="tab.component" :data="tab.data" ref="components" />
         </cube-slide-item>
       </cube-slide>
     </div>
@@ -36,9 +37,7 @@
     props: {
       tabs: {
         type: Array,
-        default() {
-          return [];
-        },
+        default: () => [],
       },
       initialIndex: {
         // 初始渲染的选中tab
@@ -66,9 +65,14 @@
         },
       },
     },
+    mounted() {
+      this.onChange(this.initialIndex); // 初始化渲染数据
+    },
     methods: {
       onChange(currentIndex) {
         this.index = currentIndex;
+        const component = this.$refs.components[currentIndex]; // 拿到组件实例
+        component.fetch && component.fetch();
       },
       onScroll(pos) {
         const transformX =

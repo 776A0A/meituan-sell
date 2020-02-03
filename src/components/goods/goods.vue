@@ -1,9 +1,74 @@
 <template>
-  <div class="goods">goods</div>
+  <div class="goods">
+    <div class="scroll-nav-wrapper">
+      <cube-scroll-nav
+        :side="true"
+        :data="goods"
+        :options="scrollOptions"
+        v-if="goods.length"
+      >
+        <cube-scroll-nav-panel
+          v-for="good in goods"
+          :key="good.name"
+          :label="good.name"
+          :title="good.name"
+        >
+          <ul>
+            <li v-for="food in good.foods" :key="food.name" class="food-item">
+              <div class="icon">
+                <img :src="food.icon" alt="icon" width="57" height="57" />
+              </div>
+              <div class="content">
+                <h2 class="name">{{ food.name }}</h2>
+                <div class="desc">{{ food.description }}</div>
+                <div class="extra">
+                  <span class="count">月售{{ food.sellCount }}份</span>
+                  <span>好评率{{ food.rating }}%</span>
+                </div>
+                <div class="price">
+                  <span class="now">￥{{ food.price }}</span>
+                  <span class="old" v-show="food.oldPrice"
+                    >￥{{ food.oldPrice }}</span
+                  >
+                </div>
+              </div>
+            </li>
+          </ul>
+        </cube-scroll-nav-panel>
+      </cube-scroll-nav>
+    </div>
+  </div>
 </template>
 
 <script>
-  export default {};
+  import { getGoods } from 'api';
+
+  export default {
+    name: 'goods',
+    props: {
+      // 这里传入的是当前商家，虽然在这里没有使用这个数据，但在真实情况下
+      // 会根据传入的商家请求相应的数据
+      data: {
+        type: Object,
+        default: () => {},
+      },
+    },
+    data() {
+      return {
+        goods: [],
+        scrollOptions: {
+          click: false,
+          directionLockThreshold: 0,
+        },
+      };
+    },
+    methods: {
+      fetch() {
+        if (this.goods.length) return;
+        getGoods().then(res => (this.goods = res));
+      },
+    },
+  };
 </script>
 
 <style lang="stylus" scoped>
@@ -19,6 +84,9 @@
       top: 0
       left: 0
       bottom: 48px
+    >>> .cube-sticky-fixed
+      .cube-sticky-content
+        transform: translateY(-1px)
     >>> .cube-scroll-nav-bar
       width: 80px
       white-space: normal
