@@ -8,10 +8,12 @@
       </div>
     </transition>
     <div class="cart-count" v-show="food.count > 0">{{ food.count }}</div>
-    <div class="cart-add icon-add_circle" @click.stop="add"></div>
+    <div class="cart-add icon-add_circle" @click.stop="add($event)"></div>
   </div>
 </template>
 <script>
+  const EVENT_ADD = 'add';
+
   export default {
     name: 'cart-control',
     props: {
@@ -20,13 +22,15 @@
       },
     },
     methods: {
-      add() {
+      add(e) {
         // count 字段是后面添加上去的，不是后台返回就有的
         if (!this.food.count) {
           this.$set(this.food, 'count', 1); // 为了能够响应式
         } else {
           this.food.count++;
         }
+
+        this.$emit(EVENT_ADD, e.target); // 派发事件，并将元素传出，因为需要元素的高度等信息
       },
       decrease() {
         if (this.food.count === 0) return;

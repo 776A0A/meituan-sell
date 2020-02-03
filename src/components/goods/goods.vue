@@ -32,7 +32,7 @@
                   >
                 </div>
                 <div class="cart-control-wrapper">
-                  <CartControl :food="food" />
+                  <CartControl :food="food" @add="onAdd" />
                 </div>
               </div>
             </li>
@@ -45,6 +45,7 @@
         :deliveryPrice="seller.deliveryPrice"
         :minPrice="seller.minPrice"
         :selectFoods="selectFoods"
+        ref="shopCart"
       />
     </div>
   </div>
@@ -101,6 +102,10 @@
       fetch() {
         if (this.goods.length) return; // 如果已经调用过，返回
         getGoods().then(res => (this.goods = res));
+      },
+      onAdd(el) {
+        // goods 组件在这里相当于一个中间层，传递事件及负载
+        this.$refs.shopCart.drop(el);
       },
     },
   };
