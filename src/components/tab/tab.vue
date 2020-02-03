@@ -71,10 +71,12 @@
     methods: {
       onChange(currentIndex) {
         this.index = currentIndex;
+        // 只有在滑动到相应页面才请求数据
         const component = this.$refs.components[currentIndex]; // 拿到组件实例
         component.fetch && component.fetch();
       },
       onScroll(pos) {
+        // tab栏和内容的双向绑定
         const transformX =
           (-pos.x / this.$refs.slide.slide.scrollerWidth) *
           this.$refs.tabBar.$el.offsetWidth;

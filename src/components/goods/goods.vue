@@ -37,14 +37,22 @@
         </cube-scroll-nav-panel>
       </cube-scroll-nav>
     </div>
+    <div class="shop-cart-wrapper">
+      <ShopCart
+        :deliveryPrice="seller.deliveryPrice"
+        :minPrice="seller.minPrice"
+      />
+    </div>
   </div>
 </template>
 
 <script>
   import { getGoods } from 'api';
+  import ShopCart from '../shop-cart';
 
   export default {
     name: 'goods',
+    components: { ShopCart },
     props: {
       // 这里传入的是当前商家，虽然在这里没有使用这个数据，但在真实情况下
       // 会根据传入的商家请求相应的数据
@@ -62,9 +70,15 @@
         },
       };
     },
+    computed: {
+      seller() {
+        return this.data.seller;
+      },
+    },
     methods: {
+      // 这个接口是留给外部调用的
       fetch() {
-        if (this.goods.length) return;
+        if (this.goods.length) return; // 如果已经调用过，返回
         getGoods().then(res => (this.goods = res));
       },
     },
