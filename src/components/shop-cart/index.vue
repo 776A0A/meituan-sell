@@ -1,3 +1,4 @@
+主要负责显示总价等数据
 <template>
   <div>
     <div class="shopcart">
@@ -10,7 +11,9 @@
                 :class="{ highlight: totalCount > 0 }"
               ></i>
             </div>
-            <div class="num" v-show="totalCount > 0"></div>
+            <div class="num" v-show="totalCount > 0">
+              <Bubble :num="totalCount" />
+            </div>
           </div>
           <div class="price" :class="{ highlight: totalPrice > 0 }">
             ￥{{ totalPrice }}
@@ -27,8 +30,10 @@
   </div>
 </template>
 <script>
+  import Bubble from '../bubble';
   export default {
     name: 'shop-cart',
+    components: { Bubble },
     props: {
       selectFoods: {
         type: Array,
@@ -53,8 +58,9 @@
       },
       totalCount() {
         if (this.selectFoods.length === 0) return 0;
-        return (
-          this.selectFoods.reduce((total, { count }) => (total += count)), 0
+        return this.selectFoods.reduce(
+          (total, { count }) => (total += count),
+          0,
         );
       },
       payDesc() {

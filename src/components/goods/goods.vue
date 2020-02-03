@@ -31,6 +31,9 @@
                     >￥{{ food.oldPrice }}</span
                   >
                 </div>
+                <div class="cart-control-wrapper">
+                  <CartControl :food="food" />
+                </div>
               </div>
             </li>
           </ul>
@@ -41,6 +44,7 @@
       <ShopCart
         :deliveryPrice="seller.deliveryPrice"
         :minPrice="seller.minPrice"
+        :selectFoods="selectFoods"
       />
     </div>
   </div>
@@ -49,10 +53,11 @@
 <script>
   import { getGoods } from 'api';
   import ShopCart from '../shop-cart';
+  import CartControl from '../cart-control';
 
   export default {
     name: 'goods',
-    components: { ShopCart },
+    components: { ShopCart, CartControl },
     props: {
       // 这里传入的是当前商家，虽然在这里没有使用这个数据，但在真实情况下
       // 会根据传入的商家请求相应的数据
@@ -73,6 +78,22 @@
     computed: {
       seller() {
         return this.data.seller;
+      },
+      selectFoods() {
+        // let ret = [];
+        // this.goods.forEach(good => {
+        //   good.foods.forEach(food => {
+        //     if (food.count) ret.push(food);
+        //   });
+        // });
+
+        return this.goods.reduce(
+          (ret, good) => [
+            ...ret,
+            ...good.foods.filter(food => food.count && food),
+          ],
+          [],
+        );
       },
     },
     methods: {
