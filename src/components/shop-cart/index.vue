@@ -21,7 +21,7 @@
           <div class="desc">另需配送费￥{{ deliveryPrice }}元</div>
         </div>
         <div class="content-right">
-          <div class="pay" :class="payClass">
+          <div class="pay" :class="payClass" @click.stop="pay">
             {{ payDesc }}
           </div>
         </div>
@@ -115,7 +115,7 @@
         }
       },
       payClass() {
-        if (this.totalCount || this.totalPrice < this.minPrice) {
+        if (!this.totalCount || this.totalPrice < this.minPrice) {
           return `not-enough`;
         } else {
           return `enough`;
@@ -202,6 +202,7 @@
             $events: {
               hide: () => (this.listFold = true),
               leave: () => this._hideShopCartSticky(),
+              add: el => this.shopCartStickyComp.drop(el),
             }, // 为了应该用户点击蒙层关闭的行为
           });
 
@@ -229,10 +230,27 @@
       _hideShopCartSticky() {
         this.shopCartStickyComp.hide();
       },
+      pay() {
+        if (this.totalPrice < this.minPrice) return;
+
+        this.$createDialog({
+          type: 'confirm',
+          title: '支付',
+          content: `支付${this.totalPrice}元`,
+          $events: {
+            confirm: () => this.selectFoods.forEach(food => (food.count = 0)),
+          },
+        }).show();
+      },
     },
     watch: {
       fold(val) {
         this.listFold = val;
+      },
+      totalCount(val) {
+        if (!this.listFold && !val) {
+          this._hideShopCartList();
+        }
       },
     },
   };

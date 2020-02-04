@@ -13,7 +13,7 @@
         <div v-show="visible">
           <div class="list-header">
             <h1 class="title">购物车</h1>
-            <div class="empty">清空</div>
+            <div class="empty" @click="empty">清空</div>
           </div>
           <cube-scroll class="list-content" ref="listContent">
             <ul>
@@ -23,7 +23,7 @@
                   <span>￥{{ food.price * food.count }}</span>
                 </div>
                 <div class="cart-control-wrapper">
-                  <CartControl :food="food" />
+                  <CartControl :food="food" @add="onAdd" />
                 </div>
               </li>
             </ul>
@@ -38,6 +38,7 @@
 
   const EVENT_HIDE = 'hide';
   const EVENT_LEAVE = 'leave';
+  const EVENT_ADD = 'add';
 
   export default {
     name: 'shop-cart-list',
@@ -56,6 +57,7 @@
     methods: {
       show() {
         this.visible = true;
+        this.$nextTick(() => this.$refs.listContent.refresh());
       },
       hide() {
         this.visible = false;
@@ -66,6 +68,26 @@
       },
       onLeave() {
         this.$emit(EVENT_LEAVE);
+      },
+      onAdd(el) {
+        this.$emit(EVENT_ADD, el);
+      },
+      empty() {
+        this.dialogComp =
+          this.dialogComp ||
+          this.$createDialog({
+            type: 'confirm',
+            title: '清空购物车',
+            content: '确认清空吗？',
+            $events: {
+              confirm: () => {
+                this.selectFoods.forEach(food => (food.count = 0));
+                this.hide();
+              },
+            },
+          });
+
+        this.dialogComp.show();
       },
     },
   };

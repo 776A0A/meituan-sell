@@ -54,6 +54,9 @@ app内部的shop-cart组件的复制，为了能够盖住shop-cart-list的z-inde
       hide() {
         this.visible = false;
       },
+      drop(el) {
+        this.$refs.shopCart.drop(el);
+      },
     },
     components: {
       ShopCart,
