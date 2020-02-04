@@ -7,6 +7,28 @@
         :options="scrollOptions"
         v-if="goods.length"
       >
+        <!-- 当cube-scroll-nav组件的默认显示不能满足需求时，该组件提供了插槽bar，bar内部必须是一个cube-scroll-nav-bar组件 -->
+        <!-- 通过该插槽来个性化定制左边的滚动栏显示效果 -->
+        <template #bar="{txts, labels, current}">
+          <cube-scroll-nav-bar
+            direction="vertical"
+            :txts="barTxts"
+            :labels="labels"
+            :current="current"
+          >
+            <!-- cube-scroll-nav-bar组件也有默认插槽 -->
+            <!-- 这里的txt就是上面传入的txts中的每一项 -->
+            <template #default="{txt:{type, name, count}}">
+              <div class="text">
+                <SupportIco v-if="type >= 1" :size="3" :type="type" />
+                <span>{{ name }}</span>
+                <span class="num" v-if="count">
+                  <Bubble :num="count" />
+                </span>
+              </div>
+            </template>
+          </cube-scroll-nav-bar>
+        </template>
         <cube-scroll-nav-panel
           v-for="good in goods"
           :key="good.name"
@@ -55,10 +77,12 @@
   import { getGoods } from 'api';
   import ShopCart from '../shop-cart';
   import CartControl from '../cart-control';
+  import SupportIco from '../support-ico/support-ico.vue';
+  import Bubble from '../bubble';
 
   export default {
     name: 'goods',
-    components: { ShopCart, CartControl },
+    components: { ShopCart, CartControl, SupportIco, Bubble },
     props: {
       // 这里传入的是当前商家，虽然在这里没有使用这个数据，但在真实情况下
       // 会根据传入的商家请求相应的数据
@@ -95,6 +119,19 @@
           ],
           [],
         );
+      },
+      barTxts() {
+        const ret = [];
+        this.goods.forEach(({ type, name, foods }) => {
+          const count = foods.reduce(
+            (accu, { count = 0 }) => (accu += count),
+            0,
+          );
+          // 之所以有这三个属性，是因为左边滚动栏需要这些数据以进行显示
+          ret.push({ count, type, name });
+        });
+
+        return ret;
       },
     },
     methods: {
