@@ -2,7 +2,7 @@
 <template>
   <div>
     <div class="shopcart">
-      <div class="content">
+      <div class="content" @click="toggleList">
         <div class="content-left">
           <div class="logo-wrapper">
             <div class="logo" :class="{ highlight: totalCount > 0 }">
@@ -75,10 +75,19 @@
         type: Number,
         default: 0,
       },
+      fold: {
+        type: Boolean,
+        default: true, // 默认底部商品列表收起
+      },
+      sticky: {
+        type: Boolean,
+        default: false,
+      },
     },
     data() {
       return {
         balls: ballFactory(),
+        listFold: this.fold,
       };
     },
     computed: {
@@ -172,6 +181,58 @@
           ball.show = false; // 隐藏
           el.style.display = `none`; // 这个必须加，不加小球隐藏会有延迟
         }
+      },
+      toggleList() {
+        if (this.listFold) {
+          if (!this.totalCount) return;
+          this.listFold = false;
+          this._showShopCartList();
+
+          this._showShopCartSticky();
+        } else {
+          this.listFold = true;
+          this._hideShopCartList();
+        }
+      },
+      _showShopCartList() {
+        this.shopCartListComp =
+          this.shopCartListComp ||
+          this.$createShopCartList({
+            $props: { selectFoods: 'selectFoods' },
+            $events: {
+              hide: () => (this.listFold = true),
+              leave: () => this._hideShopCartSticky(),
+            }, // 为了应该用户点击蒙层关闭的行为
+          });
+
+        this.shopCartListComp.show();
+      },
+      _hideShopCartList() {
+        const comp = this.sticky ? this.$parent.list : this.shopCartListComp;
+        comp.hide && comp.hide();
+      },
+      _showShopCartSticky() {
+        this.shopCartStickyComp =
+          this.shopCartStickyComp ||
+          this.$createShopCartSticky({
+            $props: {
+              selectFoods: 'selectFoods',
+              deliveryPrice: 'deliveryPrice',
+              minPrice: 'minPrice',
+              fold: 'listFold',
+              list: this.shopCartListComp,
+            },
+          });
+
+        this.shopCartStickyComp.show();
+      },
+      _hideShopCartSticky() {
+        this.shopCartStickyComp.hide();
+      },
+    },
+    watch: {
+      fold(val) {
+        this.listFold = val;
       },
     },
   };

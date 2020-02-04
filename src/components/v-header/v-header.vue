@@ -50,7 +50,7 @@
       showDetail() {
         this.headerDetailComp = this.headerDetailComp || this.$createHeaderDetail({
           $props: {
-            seller: 'seller'
+            seller: 'seller' // HeaderDetail组件接收的props，必须写成字符串形式
           }
         })
 
