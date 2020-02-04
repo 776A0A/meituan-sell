@@ -35,13 +35,14 @@
 </template>
 <script>
   import CartControl from '../cart-control';
+  import popup from 'common/mixins/popup';
 
-  const EVENT_HIDE = 'hide';
   const EVENT_LEAVE = 'leave';
   const EVENT_ADD = 'add';
 
   export default {
     name: 'shop-cart-list',
+    mixins: [popup],
     components: { CartControl },
     props: {
       selectFoods: {
@@ -49,19 +50,10 @@
         default: () => [],
       },
     },
-    data() {
-      return {
-        visible: false,
-      };
-    },
     methods: {
       show() {
         this.visible = true;
-        this.$nextTick(() => this.$refs.listContent.refresh());
-      },
-      hide() {
-        this.visible = false;
-        this.$emit(EVENT_HIDE); // 派发这个事件是为了应对用户点击蒙层进行关闭的行为
+        this.$nextTick(() => this.$refs.listContent.refresh()); // 刷新高度以使得商品购物车商品列表能够滑动
       },
       maskClick() {
         this.hide();

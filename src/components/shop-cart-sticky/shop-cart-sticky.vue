@@ -15,14 +15,11 @@ app内部的shop-cart组件的复制，为了能够盖住shop-cart-list的z-inde
 
 <script>
   import ShopCart from 'components/shop-cart';
+  import popup from 'common/mixins/popup';
 
   export default {
     name: 'shop-cart-sticky',
-    data() {
-      return {
-        visible: false,
-      };
-    },
+    mixins: [popup],
     props: {
       selectFoods: {
         type: Array,
@@ -48,12 +45,6 @@ app内部的shop-cart组件的复制，为了能够盖住shop-cart-list的z-inde
       },
     },
     methods: {
-      show() {
-        this.visible = true;
-      },
-      hide() {
-        this.visible = false;
-      },
       drop(el) {
         this.$refs.shopCart.drop(el);
       },

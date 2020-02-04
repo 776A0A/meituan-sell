@@ -35,7 +35,7 @@
           </div>
         </div>
       </div>
-      <div class="detail-close" @click="_hide">
+      <div class="detail-close" @click="hide">
         <i class="icon-close"></i>
       </div>
     </div>
@@ -45,28 +45,17 @@
 <script>
   import Star from 'components/star/star';
   import SupportIco from 'components/support-ico/support-ico';
+  import popup from 'common/mixins/popup';
 
   export default {
     name: 'header-detail',
+    mixins: [popup],
     props: {
       seller: {
         type: Object,
         default() {
           return {};
         },
-      },
-    },
-    data() {
-      return {
-        visible: false,
-      };
-    },
-    methods: {
-      show() {
-        this.visible = true;
-      },
-      _hide() {
-        this.visible = false;
       },
     },
     components: {
